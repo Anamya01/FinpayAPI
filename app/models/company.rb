@@ -1,4 +1,4 @@
 class Company < ApplicationRecord
     validates :name, presence: true
-    validates :schema_name, presence: true, uniqueness: true
+    validates :subdomain, presence: true, uniqueness: { case_sensitive: false }
 end

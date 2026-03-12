@@ -14,8 +14,10 @@ class CompanySwitcher
 
     return [404, { "Content-Type" => "application/json" }, [{ error: "Company not found" }.to_json]] unless company
 
-    Apartment::Tenant.switch(company.schema_name) do
+    Apartment::Tenant.switch(company.subdomain) do
       @app.call(env)
     end
+  ensure
+    Apartment::Tenant.reset
   end
 end

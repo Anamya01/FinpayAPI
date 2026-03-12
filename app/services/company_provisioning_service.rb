@@ -1,16 +1,15 @@
 class CompanyProvisioningService
   def self.call(company)
-    schema = company.schema_name
+    schema = company.subdomain
 
-     # create schema
+    # create tenant schema
     Apartment::Tenant.create(schema)
 
-    # run migrations in that schema
+    # run migrations inside tenant schema
     Apartment::Tenant.switch(schema) do
-      ActiveRecord::MigrationContext.new(
-        "db/migrate",
-        ActiveRecord::SchemaMigration
-      ).migrate
+      migration_context = ActiveRecord::MigrationContext.new(
+        "db/tenant_migrate")
+      migration_context.migrate
     end
   end
 end
