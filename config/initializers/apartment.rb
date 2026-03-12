@@ -14,7 +14,7 @@ require 'apartment/elevators/subdomain'
 # Apartment Configuration
 #
 Apartment.configure do |config|
- config.excluded_models = %w[]
+ config.excluded_models = ["Company"]
 
  #to create seperate schema and not database
  config.use_schemas = true
