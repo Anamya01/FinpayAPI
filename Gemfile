@@ -41,6 +41,10 @@ gem 'pg'
 # Added ros-apartment for multi tenancy. (apartment is not maintained for this rails version)
 gem 'ros-apartment', require: 'apartment'
 
+# Added devise and devise-jwt for Authentication
+gem 'devise'
+gem 'devise-jwt'
+
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

@@ -10,7 +10,7 @@ class CompanySwitcher
 
     return @app.call(env) unless company_id
 
-    company = Company.find_by(id: company_id)
+    company = Company.find(company_id)
 
     return [404, { "Content-Type" => "application/json" }, [{ error: "Company not found" }.to_json]] unless company
 
