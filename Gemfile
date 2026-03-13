@@ -36,14 +36,17 @@ gem "image_processing", "~> 1.2"
 # gem "rack-cors"
 
 # pg for postgresql support
-gem 'pg'
+gem "pg"
 
 # Added ros-apartment for multi tenancy. (apartment is not maintained for this rails version)
-gem 'ros-apartment', require: 'apartment'
+gem "ros-apartment", require: "apartment"
 
 # Added devise and devise-jwt for Authentication
-gem 'devise'
-gem 'devise-jwt'
+gem "devise"
+gem "devise-jwt"
+
+# Gem to serialize ruby objects into json format
+gem "jsonapi-serializer"
 
 
 group :development, :test do
@@ -58,4 +61,9 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem "pry"
+  gem "rspec-rails"
+  gem "factory_bot_rails"
+  gem "faker"
 end

@@ -1,31 +1,31 @@
 class CompaniesController < ApplicationController
   # GET /Companies
-  def index 
+  def index
     render json: Company.all
   end
   # GET /companies/:id
   def show
     render json: company
-  end 
+  end
   # POST /Companies
   def create
     company = Company.create!(
       name: params[:name],
       subdomain: params[:subdomain]
     )
-    CompanyProvisioningService.call(company)
+    CompanyProvisioningService.call(company, params[:email], params[:password])
     render json: company
   end
   # PUT companies/:id
   def update
     company.update!(company_params)
     render json: company
-  end 
+  end
   # DELETE companies/:id
-  def destroy 
+  def destroy
     company.destroy!
     head :no_content
-  end 
+  end
   private
   def company
     @company ||= Company.find(params[:id])
