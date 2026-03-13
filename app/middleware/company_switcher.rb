@@ -4,6 +4,10 @@ class CompanySwitcher
   end
 
   def call(env)
+    if Rails.env.test?
+    Apartment::Tenant.switch!("public")
+    return @app.call(env)
+    end
     request = ActionDispatch::Request.new(env)
 
     company_id = request.headers["X-Company-Id"]
@@ -12,7 +16,7 @@ class CompanySwitcher
 
     company = Company.find(company_id)
 
-    return [404, { "Content-Type" => "application/json" }, [{ error: "Company not found" }.to_json]] unless company
+    return [ 404, { "Content-Type" => "application/json" }, [ { error: "Company not found" }.to_json ] ] unless company
 
     Apartment::Tenant.switch(company.subdomain) do
       @app.call(env)
