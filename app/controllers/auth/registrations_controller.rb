@@ -8,12 +8,7 @@ module Auth
     end
 
     def create
-      user = User.create!(
-        email: params[:email],
-        password: params[:password],
-        password_confirmation: params[:password_confirmation],
-        role: :member
-      )
+      user = User.create!(user_params.merge(role: :member))
 
       render json: {
         message: "User created successfully",
@@ -36,6 +31,10 @@ module Auth
     end
 
     private
+    def user_params
+      params.require(:user).permit(:email, :password, :password_confirmation)
+    end
+
     def account_update_params
       params.require(:user).permit(:email, :password, :password_confirmation, :current_password)
     end
