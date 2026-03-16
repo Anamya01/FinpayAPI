@@ -4,10 +4,6 @@ class CompanySwitcher
   end
 
   def call(env)
-    if Rails.env.test?
-    Apartment::Tenant.switch!("public")
-    return @app.call(env)
-    end
     request = ActionDispatch::Request.new(env)
 
     company_id = request.headers["X-Company-Id"]

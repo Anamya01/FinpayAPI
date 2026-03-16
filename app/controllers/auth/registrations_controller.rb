@@ -2,11 +2,12 @@ module Auth
   class RegistrationsController < Devise::RegistrationsController
     respond_to :json
     before_action :authenticate_user!, only: [ :show, :update, :destroy ]
+
     def show
       render json: current_user
     end
+
     def create
-      Rails.logger.info "CURRENT TENANT: #{Apartment::Tenant.current}"
       user = User.create!(
         email: params[:email],
         password: params[:password],
@@ -19,6 +20,7 @@ module Auth
         user: user
       }, status: :created
     end
+
     def update
       # Devise specific method to update
       if current_user.update_with_password(account_update_params)
@@ -27,10 +29,12 @@ module Auth
         render json: { errors: current_user.errors.full_messages }, status: :unprocessable_entity
       end
     end
+
     def destroy
       current_user.destroy
       render json: { message: "User account deleted successfully" }, status: :ok
     end
+
     private
     def account_update_params
       params.require(:user).permit(:email, :password, :password_confirmation, :current_password)
