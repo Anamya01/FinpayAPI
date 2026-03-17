@@ -4,41 +4,42 @@ class CategoriesController < ApplicationController
   before_action :set_category, only: [ :show, :update, :destroy ]
 
   def index
-    categories = Category.all
-    render json: CategorySerializer.new(categories).serialize
+    categories = Category.all.page(params[:page]).per(params[:per_page] || 10)
+    render json: { categories: CategorySerializer.new(categories),
+                    meta: pagination_meta(categories) }
   end
 
   def show
-    render json: CategorySerializer.new(@category).serialize
+    render json: CategorySerializer.new(category).serialize
   end
 
   def create
-    category = Category.new(category_params)
+    new_category = Category.new(category_params)
 
     if category.save
-      render json: CategorySerializer.new(category).serialize, status: :created
+      render json: CategorySerializer.new(new_category).serialize, status: :created
+    else
+      render json: { errors: new_category.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    if category.update(category_params)
+      render json: CategorySerializer.new(category).serialize
     else
       render json: { errors: category.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
-  def update
-    if @category.update(category_params)
-      render json: CategorySerializer.new(@category).serialize
-    else
-      render json: { errors: @category.errors.full_messages }, status: :unprocessable_entity
-    end
-  end
-
   def destroy
-    @category.destroy
+    category.destroy
     head :no_content
   end
 
   private
 
-  def set_category
-    @category = Category.find(params[:id])
+  def category
+    @category ||= Category.find(params[:id])
   end
 
   def category_params

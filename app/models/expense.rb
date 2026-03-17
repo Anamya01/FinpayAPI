@@ -12,6 +12,21 @@ class Expense < ApplicationRecord
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :date, presence: true
   validates :description, length: { maximum: 1200 }
+
+  # Scopes
+  scope :by_category, ->(category_id) {
+  category_id.present? ? where(category_id: category_id) : all
+}
+
+scope :by_status, ->(status) {
+  status.present? ? where(status: status) : all
+}
+
+scope :in_date_range, ->(start_date, end_date) {
+  (start_date.present? && end_date.present?) ? where(date: start_date..end_date) : all
+}
+
+
   # AASM
   aasm column: :status do
     state :pending, initial: true

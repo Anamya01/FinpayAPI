@@ -2,6 +2,7 @@ class ExpenseSerializer
   include Alba::Resource
 
   attributes :id,
+             :user_id,
              :name,
              :amount,
              :description,
@@ -12,8 +13,4 @@ class ExpenseSerializer
 
   one :category, resource: CategorySerializer
   many :receipts, resource: ReceiptSerializer
-
-  attribute :user_id do |expense|
-    expense.user_id
-  end
 end

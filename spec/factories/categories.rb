@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :category do
-    name { Faker::Commerce.unique.department(max: 1) + " Expenses" }
+    sequence(:name) { |n| "#{Faker::Commerce.department(max: 1)} #{n} Expenses" }
     description { Faker::Lorem.sentence(word_count: 10) }
   end
 end
