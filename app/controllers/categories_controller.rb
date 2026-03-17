@@ -1,7 +1,6 @@
 class CategoriesController < ApplicationController
   before_action :authenticate_user!
   before_action :require_admin
-  before_action :set_category, only: [ :show, :update, :destroy ]
 
   def index
     categories = Category.all.page(params[:page]).per(params[:per_page] || 10)

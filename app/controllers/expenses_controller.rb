@@ -1,6 +1,5 @@
 class ExpensesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_expense, only: [ :show, :update, :destroy ]
 
   def index
     # to resolv n+1 query issue
