@@ -11,7 +11,7 @@ module Auth
       user = User.create!(user_params.merge(role: :member))
 
       render json: {
-        message: "User created successfully",
+        message: t("auth.registerations.create.success"),
         user: user
       }, status: :created
     end
@@ -27,7 +27,7 @@ module Auth
 
     def destroy
       current_user.destroy
-      render json: { message: "User account deleted successfully" }, status: :ok
+      render json: { message:  t("auth.registerations.destroy.success") }, status: :ok
     end
 
     private
