@@ -29,3 +29,9 @@
 
 en:
   hello: "Hello world"
+  auth:
+    registrations:
+      create:
+        success: "User created successfully"
+      destroy:
+        success: "User account deleted successfully"

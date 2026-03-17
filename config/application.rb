@@ -13,7 +13,7 @@ module FinpayApi
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.1
 
-    # Added middleware to handle tenant schema swiching 
+    # Added middleware to handle tenant schema swiching
     config.middleware.use CompanySwitcher
 
 

@@ -1,0 +1,42 @@
+module Auth
+  class RegistrationsController < Devise::RegistrationsController
+    respond_to :json
+    before_action :authenticate_user!, only: [ :show, :update, :destroy ]
+
+    def show
+      render json: current_user
+    end
+
+    def create
+      user = User.create!(user_params.merge(role: :member))
+
+      render json: {
+        message: t("auth.registerations.create.success"),
+        user: user
+      }, status: :created
+    end
+
+    def update
+      # Devise specific method to update
+      if current_user.update_with_password(account_update_params)
+        render json: current_user
+      else
+        render json: { errors: current_user.errors.full_messages }, status: :unprocessable_entity
+      end
+    end
+
+    def destroy
+      current_user.destroy
+      render json: { message:  t("auth.registerations.destroy.success") }, status: :ok
+    end
+
+    private
+    def user_params
+      params.require(:user).permit(:email, :password, :password_confirmation)
+    end
+
+    def account_update_params
+      params.require(:user).permit(:email, :password, :password_confirmation, :current_password)
+    end
+  end
+end

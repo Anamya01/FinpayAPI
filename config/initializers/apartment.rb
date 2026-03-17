@@ -6,7 +6,7 @@
 #
 # require 'apartment/elevators/generic'
 # require 'apartment/elevators/domain'
-require 'apartment/elevators/subdomain'
+require "apartment/elevators/subdomain"
 # require 'apartment/elevators/first_subdomain'
 # require 'apartment/elevators/host'
 
@@ -14,10 +14,13 @@ require 'apartment/elevators/subdomain'
 # Apartment Configuration
 #
 Apartment.configure do |config|
- config.excluded_models = ["Company"]
+ config.excluded_models = [ "Company" ]
+ config.default_tenant = "public"
 
- #to create seperate schema and not database
+ # to create seperate schema and not database
  config.use_schemas = true
+ config.tenant_names = lambda { Company.pluck(:subdomain) }
+ Apartment::Elevators::Subdomain.excluded_subdomains = [ "www" ]
 end
 
 # Setup a custom Tenant switching middleware. The Proc should return the name of the Tenant that
