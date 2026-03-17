@@ -48,6 +48,12 @@ gem "devise-jwt"
 # Gem to serialize ruby objects into json format
 gem "jsonapi-serializer"
 
+# AASM
+gem "aasm"
+
+# Alba serializer
+gem "alba"
+
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -67,4 +73,5 @@ group :development, :test do
   gem "factory_bot_rails"
   gem "faker"
   gem "database_cleaner-active_record"
+  gem "shoulda-matchers"
 end

@@ -2,6 +2,7 @@ require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 require 'database_cleaner/active_record'
+Dir[Rails.root.join('spec/support/**/*.rb')].sort.each { |f| require f }
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
 
@@ -13,6 +14,8 @@ end
 
 RSpec.configure do |config|
   config.fixture_paths = [ Rails.root.join('spec/fixtures') ]
+
+  config.include AuthHelpers, type: :request
 
   # IMPORTANT: Disable transactional fixtures for Apartment/Multi-tenancy
   config.use_transactional_fixtures = false
@@ -56,4 +59,11 @@ RSpec.configure do |config|
   end
 
   config.filter_rails_from_backtrace!
+
+  Shoulda::Matchers.configure do |config|
+    config.integrate do |with|
+      with.test_framework :rspec
+      with.library :rails
+    end
+  end
 end

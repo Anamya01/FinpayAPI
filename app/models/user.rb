@@ -6,4 +6,8 @@ class User < ApplicationRecord
          :jwt_authenticatable,
          jwt_revocation_strategy: self
   enum :role, { admin: 0, member: 1 }
+  has_many :expenses, dependent: :destroy
+  def admin
+    role == "admin"
+  end
 end

@@ -1,6 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    aasm (5.5.2)
+      concurrent-ruby (~> 1.0)
     action_text-trix (2.1.16)
       railties
     actioncable (8.1.2)
@@ -77,6 +79,7 @@ GEM
       uri (>= 0.13.1)
     addressable (2.8.9)
       public_suffix (>= 2.0.2, < 8.0)
+    alba (3.10.0)
     ast (2.4.3)
     base64 (0.3.0)
     bcrypt (3.1.21)
@@ -345,6 +348,8 @@ GEM
       ffi (~> 1.12)
       logger
     securerandom (0.4.1)
+    shoulda-matchers (7.0.1)
+      activesupport (>= 7.1)
     solid_cable (1.0.3)
       rails (< 9)
     solid_cache (0.7.0)
@@ -393,6 +398,8 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  aasm
+  alba
   bootsnap
   brakeman
   bundler-audit
@@ -412,6 +419,7 @@ DEPENDENCIES
   ros-apartment
   rspec-rails
   rubocop-rails-omakase
+  shoulda-matchers
   solid_cable
   solid_cache
   solid_queue

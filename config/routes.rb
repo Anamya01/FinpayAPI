@@ -14,6 +14,11 @@ Rails.application.routes.draw do
     delete "/delete_user", to: "auth/registrations#destroy"
   end
   resources :companies
+  resources :categories
+
+  resources :expenses do
+    resources :receipts, only: [ :create, :destroy ]
+  end
 
   # Defines the root path route ("/")
   # root "posts#index"
