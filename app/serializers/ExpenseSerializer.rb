@@ -1,6 +1,6 @@
 class ExpenseSerializer
   include Alba::Resource
-
+  include Rails.application.routes.url_helpers
   attributes :id,
              :user_id,
              :name,
