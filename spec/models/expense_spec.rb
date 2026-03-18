@@ -11,9 +11,6 @@ RSpec.describe Expense, type: :model do
 
     # Custom association for Approver
     it { should belong_to(:approver).class_name('User').with_foreign_key(:approved_by_id).optional }
-
-    # Nested attributes for receipts
-    it { should accept_nested_attributes_for(:receipts).allow_destroy(true) }
   end
 
   describe "Validations" do

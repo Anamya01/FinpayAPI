@@ -2,8 +2,7 @@ class Expense < ApplicationRecord
   include AASM
   belongs_to :user
   belongs_to :category
-  has_many :receipts, dependent: :destroy
-  accepts_nested_attributes_for :receipts, allow_destroy: true
+  has_many_attached :receipts
   belongs_to :approver,
              class_name: "User",
              foreign_key: :approved_by_id,

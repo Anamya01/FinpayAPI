@@ -15,7 +15,7 @@ class CategoriesController < ApplicationController
   def create
     new_category = Category.new(category_params)
 
-    if category.save
+    if new_category.save
       render json: CategorySerializer.new(new_category).serialize, status: :created
     else
       render json: { errors: new_category.errors.full_messages }, status: :unprocessable_entity

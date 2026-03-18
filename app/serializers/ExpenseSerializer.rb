@@ -12,5 +12,13 @@ class ExpenseSerializer
              :approved_at
 
   one :category, resource: CategorySerializer
-  many :receipts, resource: ReceiptSerializer
+  attribute :receipt_urls do |expense|
+    if expense.receipts.attached?
+      expense.receipts.map do |receipt|
+        rails_blob_path(receipt, only_path: true)
+      end
+    else
+      []
+    end
+  end
 end

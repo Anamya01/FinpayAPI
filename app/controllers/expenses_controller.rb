@@ -4,9 +4,9 @@ class ExpensesController < ApplicationController
   def index
     # to resolv n+1 query issue
     base_scope = if current_user.admin?
-                 Expense.includes(:user, :category, receipts: { file_attachment: :blob })
+                 Expense.includes(:user, :category).with_attached_receipts
     else
-                 current_user.expenses.includes(:category, receipts: { file_attachment: :blob })
+                 current_user.expenses.includes(:category).with_attached_receipts
     end
     # filtered expense here.
     filtered_expenses = ExpenseFilter.new(base_scope, filter_params).call
@@ -61,8 +61,7 @@ class ExpensesController < ApplicationController
       :description,
       :date,
       :category_id,
-      # Allow nesting receipts.
-      receipts_attributes: [ :id, :file, :_destroy ]
+      receipts: []
     )
   end
   def filter_params

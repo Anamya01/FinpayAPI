@@ -16,6 +16,7 @@ module FinpayApi
     # Added middleware to handle tenant schema swiching
     config.middleware.use CompanySwitcher
 
+    config.active_storage.replace_on_assign_to_many = false
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
