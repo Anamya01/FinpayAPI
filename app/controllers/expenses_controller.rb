@@ -1,10 +1,11 @@
 class ExpensesController < ApplicationController
   before_action :authenticate_user!
-
+  before_action :authorize_admin!, only: [ :approve, :reject, :reimburse, :archive ]
   def index
     # to resolv n+1 query issue
     base_scope = if current_user.admin?
-                 Expense.includes(:user, :category).with_attached_receipts
+                 Expense.where.not(status: :archived)
+                 .includes(:user, :category).with_attached_receipts
     else
                  current_user.expenses.includes(:category).with_attached_receipts
     end
@@ -25,6 +26,8 @@ class ExpensesController < ApplicationController
     new_expense = current_user.expenses.new(expense_params)
 
     if new_expense.save
+      AuditLogJob.perform_async(new_expense.id, current_user.id, "created")
+      ReceiptProcessorJob.perform_async(new_expense.id)
       render json: ExpenseSerializer.new(new_expense).serialize, status: :created
     else
       render json: { errors: new_expense.errors.full_messages }, status: :unprocessable_entity
@@ -33,6 +36,9 @@ class ExpensesController < ApplicationController
 
   def update
     if expense.update(expense_params)
+      if params[:expense][:receipts].present?
+        ReceiptProcessorWorker.perform_async(expense.id)
+      end
       render json: ExpenseSerializer.new(expense).serialize
     else
       render json: { errors: expense.errors.full_messages }, status: :unprocessable_entity
@@ -44,6 +50,26 @@ class ExpensesController < ApplicationController
     head :no_content
   end
 
+  def approve
+    result = ExpenseWorkflowService.new(expense, current_user).approve
+    render json: { message: result[:message] }, status: result[:status]
+  end
+
+  def reject
+    result = ExpenseWorkflowService.new(expense, current_user).reject
+    render json: { message: result[:message] }, status: result[:status]
+  end
+
+  def reimburse
+    result = ExpenseWorkflowService.new(expense, current_user).reimburse
+    render json: { message: result[:message] }, status: result[:status]
+  end
+
+  def archive
+    result = ExpenseWorkflowService.new(expense, current_user).archive
+    render json: { message: result[:message] }, status: result[:status]
+  end
+
   private
 
   def expense
@@ -52,6 +78,12 @@ class ExpensesController < ApplicationController
     else
                 current_user.expenses.find(params[:id])
     end
+  end
+
+  def authorize_admin!
+    return if current_user.admin?
+
+    render json: { error: "Unauthorized" }, status: :forbidden
   end
 
   def expense_params

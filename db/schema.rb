@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_18_044805) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_18_090955) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -42,6 +42,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_044805) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "activity_logs", force: :cascade do |t|
+    t.string "action"
+    t.datetime "created_at", null: false
+    t.bigint "expense_id", null: false
+    t.jsonb "metadata"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["expense_id"], name: "index_activity_logs_on_expense_id"
+    t.index ["user_id"], name: "index_activity_logs_on_user_id"
+  end
+
   create_table "categories", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "description"
@@ -59,12 +70,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_044805) do
   create_table "expenses", force: :cascade do |t|
     t.decimal "amount"
     t.datetime "approved_at"
-    t.bigint "approved_by_id"
     t.bigint "category_id", null: false
     t.datetime "created_at", null: false
     t.date "date"
     t.text "description"
     t.string "name"
+    t.bigint "reviewed_by_id"
     t.string "status", default: "pending"
     t.datetime "submitted_at"
     t.datetime "updated_at", null: false
@@ -97,6 +108,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_044805) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "activity_logs", "expenses"
+  add_foreign_key "activity_logs", "users"
   add_foreign_key "expenses", "categories"
   add_foreign_key "expenses", "users"
   add_foreign_key "receipts", "expenses"

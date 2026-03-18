@@ -3,9 +3,10 @@ class Expense < ApplicationRecord
   belongs_to :user
   belongs_to :category
   has_many_attached :receipts
+  has_many :activity_logs, dependent: :destroy
   belongs_to :approver,
              class_name: "User",
-             foreign_key: :approved_by_id,
+             foreign_key: :reviewed_by_id,
              optional: true
   validates :name, presence: true
   validates :amount, presence: true, numericality: { greater_than: 0 }
@@ -43,7 +44,7 @@ scope :in_date_range, ->(start_date, end_date) {
     event :reimburse do
       transitions from: :approved, to: :reimbursed
     end
-    event :archived do
+    event :archive do
       transitions from: [ :approved, :rejected, :reimbursed ], to: :archived
     end
   end

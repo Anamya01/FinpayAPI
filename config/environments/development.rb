@@ -78,4 +78,7 @@ Rails.application.configure do
     Bullet.console       = true
     Bullet.rails_logger   = true
   end
+
+  # sidekiq
+  config.active_job.queue_adapter = :sidekiq
 end

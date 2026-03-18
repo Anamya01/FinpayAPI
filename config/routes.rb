@@ -1,3 +1,9 @@
+require "sidekiq/web"
+
+# Configure Sidekiq-specific session middleware
+Sidekiq::Web.use ActionDispatch::Cookies
+Sidekiq::Web.use ActionDispatch::Session::CookieStore, key: "_interslice_session"
+
 Rails.application.routes.draw do
   devise_for :users, skip: [ :sessions, :registrations ]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -18,8 +24,17 @@ Rails.application.routes.draw do
 
   resources :expenses do
     resources :receipts, only: [ :create, :destroy ]
+    member do
+      post :approve
+      post :reject
+      post :reimburse
+      delete :archive
+    end
   end
 
+
+
+  mount Sidekiq::Web => "/sidekiq"
   # Defines the root path route ("/")
   # root "posts#index"
 end
