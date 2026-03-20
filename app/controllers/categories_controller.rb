@@ -4,30 +4,31 @@ class CategoriesController < ApplicationController
 
   def index
     categories = Category.all.page(params[:page]).per(params[:per_page] || 10)
-    render json: { categories: CategorySerializer.new(categories),
-                    meta: pagination_meta(categories) }
+    json_response(
+      CategorySerializer.new(categories),
+      :ok,
+      nil,
+      pagination_meta(categories)
+    )
   end
 
   def show
-    render json: CategorySerializer.new(category).serialize
+    json_response(CategorySerializer.new(category))
   end
 
   def create
     new_category = Category.new(category_params)
+    new_category.save!
 
-    if new_category.save
-      render json: CategorySerializer.new(new_category).serialize, status: :created
-    else
-      render json: { errors: new_category.errors.full_messages }, status: :unprocessable_entity
-    end
+    json_response(
+      CategorySerializer.new(new_category).serialize,
+      :created
+    )
   end
 
   def update
-    if category.update(category_params)
-      render json: CategorySerializer.new(category).serialize
-    else
-      render json: { errors: category.errors.full_messages }, status: :unprocessable_entity
-    end
+    category.update!(category_params)
+    json_response(CategorySerializer.new(category))
   end
 
   def destroy
@@ -46,6 +47,7 @@ class CategoriesController < ApplicationController
   end
 
   def require_admin
-    render json: { error: "Not authorized" }, status: :forbidden unless current_user.admin?
+    return if current_user.admin?
+    error_response("Not authorized", :forbidden)
   end
 end

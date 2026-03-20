@@ -4,30 +4,28 @@ module Auth
     before_action :authenticate_user!, only: [ :show, :update, :destroy ]
 
     def show
-      render json: current_user
+      json_response(current_user)
     end
 
     def create
       user = User.create!(user_params.merge(role: :member))
 
-      render json: {
-        message: I18n.t("auth.registrations.create.success"),
-        user: user
-      }, status: :created
+      json_response(
+        user,
+        :created,
+        I18n.t("auth.registrations.create.success")
+      )
     end
 
     def update
       # Devise specific method to update
-      if current_user.update_with_password(account_update_params)
-        render json: current_user
-      else
-        render json: { errors: current_user.errors.full_messages }, status: :unprocessable_entity
-      end
+      current_user.update_with_password!(account_update_params)
+      json_response(current_user, :ok, I18n.t("auth.registrations.update.success"))
     end
 
     def destroy
       current_user.destroy
-      render json: { message:  I18n.t("auth.registrations.destroy.success") }, status: :ok
+      json_response(nil, :ok, I18n.t("auth.registrations.destroy.success"))
     end
 
     private

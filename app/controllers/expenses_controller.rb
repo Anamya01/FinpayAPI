@@ -5,36 +5,32 @@ class ExpensesController < ApplicationController
     filtered_expenses = filter_expenses(base_scope)
                                       .page(params[:page])
                                       .per(params[:per_page] || 10)
-    render json: {
-      expenses: ExpenseSerializer.new(filtered_expenses),
-      meta:  pagination_meta(filtered_expenses) }
+    json_response(
+      ExpenseSerializer.new(filtered_expenses),
+      :ok,
+      nil,
+      pagination_meta(filtered_expenses)
+    )
   end
 
   def show
-    render json: ExpenseSerializer.new(expense).serialize
+    json_response(ExpenseSerializer.new(expense))
   end
 
   def create
     new_expense = current_user.expenses.new(expense_params)
-
-    if new_expense.save
-      AuditLogJob.perform_async(new_expense.id, current_user.id, "created")
-      ReceiptProcessorJob.perform_async(new_expense.id)
-      render json: ExpenseSerializer.new(new_expense).serialize, status: :created
-    else
-      render json: { errors: new_expense.errors.full_messages }, status: :unprocessable_entity
-    end
+    new_expense.save!
+    AuditLogJob.perform_async(new_expense.id, current_user.id, "created")
+    ReceiptProcessorJob.perform_async(new_expense.id)
+    json_response(ExpenseSerializer.new(new_expense).serialize, :created)
   end
 
   def update
-    if expense.update(expense_params)
+    expense.update!(expense_params)
       if params[:expense][:receipts].present?
         ReceiptProcessorWorker.perform_async(expense.id)
       end
-      render json: ExpenseSerializer.new(expense).serialize
-    else
-      render json: { errors: expense.errors.full_messages }, status: :unprocessable_entity
-    end
+    json_response(ExpenseSerializer.new(expense).serialize)
   end
 
   def destroy
@@ -44,22 +40,22 @@ class ExpensesController < ApplicationController
 
   def approve
     result = ExpenseWorkflowService.new(expense, current_user).approve
-    render json: { message: result[:message] }, status: result[:status]
+    json_response(nil, result[:status], result[:message])
   end
 
   def reject
     result = ExpenseWorkflowService.new(expense, current_user).reject
-    render json: { message: result[:message] }, status: result[:status]
+    json_response(nil, result[:status], result[:message])
   end
 
   def reimburse
     result = ExpenseWorkflowService.new(expense, current_user).reimburse
-    render json: { message: result[:message] }, status: result[:status]
+    json_response(nil, result[:status], result[:message])
   end
 
   def archive
     result = ExpenseWorkflowService.new(expense, current_user).archive
-    render json: { message: result[:message] }, status: result[:status]
+    json_response(nil, result[:status], result[:message])
   end
 
   private
@@ -85,8 +81,7 @@ class ExpensesController < ApplicationController
 
   def authorize_admin!
     return if current_user.admin?
-
-    render json: { error: "Unauthorized" }, status: :forbidden
+    error_response("Unauthorized", :forbidden)
   end
 
   def expense_params
