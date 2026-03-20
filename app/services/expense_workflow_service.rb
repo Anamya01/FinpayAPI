@@ -5,48 +5,48 @@ class ExpenseWorkflowService
   end
 
   def approve
-    return invalid_transition("Cannot approve") unless @expense.may_approve?
+    return invalid_transition(:cannot_approve) unless @expense.may_approve?
 
     @expense.approve!
     mark_reviewed
     audit_log("approved")
 
-    success("Expense approved")
+    success(:approved)
   end
 
   def reject
-    return invalid_transition("Cannot reject") unless @expense.may_reject?
+    return invalid_transition(:cannot_reject) unless @expense.may_reject?
 
     @expense.reject!
     mark_reviewed
     audit_log("rejected")
 
-    success("Expense rejected")
+    success(:rejected)
   end
 
   def reimburse
-    return invalid_transition("Cannot reimburse") unless @expense.may_reimburse?
+    return invalid_transition(:cannot_reimburse) unless @expense.may_reimburse?
 
     @expense.reimburse!
     mark_reviewed
     audit_log("reimbursed")
 
-    success("Expense reimbursed")
+    success(:reimbursed)
   end
 
   def archive
     if @expense.pending?
       @expense.destroy!
       audit_log("deleted")
-      return success("Expense deleted (was pending)")
+      return success(:deleted)
     end
 
-    return invalid_transition("Cannot archive") unless @expense.may_archive?
+    return invalid_transition(:cannot_archive) unless @expense.may_archive?
 
     @expense.archive!
     mark_reviewed
 
-    success("Expense archived")
+    success(:archived)
   end
 
   private
@@ -55,12 +55,12 @@ class ExpenseWorkflowService
     @expense.update(reviewed_by_id: @user.id)
   end
 
-  def success(message)
-    { status: :ok, message: message }
+  def success(key)
+    { status: :ok, message: I18n.t("services.expense_workflow.success.#{key}") }
   end
 
-  def invalid_transition(message)
-    { status: :unprocessable_entity, message: message }
+  def invalid_transition(key)
+    { status: :unprocessable_entity, message: I18n.t("services.expense_workflow.errors.#{key}") }
   end
 
   def audit_log(action, metadata = {})

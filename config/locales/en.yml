@@ -35,3 +35,16 @@ en:
         success: "User created successfully"
       destroy:
         success: "User account deleted successfully"
+  services:
+    expense_workflow:
+      success:
+        approved: "Expense approved successfully"
+        rejected: "Expense rejected"
+        reimbursed: "Expense reimbursed"
+        archived: "Expense archived"
+        deleted: "Expense deleted (was pending)"
+      errors:
+        cannot_approve: "This expense cannot be approved in its current state"
+        cannot_reject: "Cannot reject this expense"
+        cannot_reimburse: "Cannot reimburse this expense"
+        cannot_archive: "Only processed expenses can be archived"

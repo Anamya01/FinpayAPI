@@ -2,15 +2,7 @@ class ExpensesController < ApplicationController
   before_action :authenticate_user!
   before_action :authorize_admin!, only: [ :approve, :reject, :reimburse, :archive ]
   def index
-    # to resolv n+1 query issue
-    base_scope = if current_user.admin?
-                 Expense.where.not(status: :archived)
-                 .includes(:user, :category).with_attached_receipts
-    else
-                 current_user.expenses.includes(:category).with_attached_receipts
-    end
-    # filtered expense here.
-    filtered_expenses = ExpenseFilter.new(base_scope, filter_params).call
+    filtered_expenses = filter_expenses(base_scope)
                                       .page(params[:page])
                                       .per(params[:per_page] || 10)
     render json: {
@@ -78,6 +70,17 @@ class ExpensesController < ApplicationController
     else
                 current_user.expenses.find(params[:id])
     end
+  end
+
+  def base_scope
+    scope = current_user.admin? ? Expense.unarchived : current_user.expenses
+    scope.includes(:category).with_attached_receipts.tap do |s|
+      s.includes(:user) if current_user.admin?
+    end
+  end
+
+  def filter_expenses(scope)
+    ExpenseFilter.new(scope, filter_params).call
   end
 
   def authorize_admin!

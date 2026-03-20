@@ -4,7 +4,7 @@ class Expense < ApplicationRecord
   belongs_to :category
   has_many_attached :receipts
   has_many :activity_logs, dependent: :destroy
-  belongs_to :approver,
+  belongs_to :reviewer,
              class_name: "User",
              foreign_key: :reviewed_by_id,
              optional: true
@@ -16,15 +16,17 @@ class Expense < ApplicationRecord
   # Scopes
   scope :by_category, ->(category_id) {
   category_id.present? ? where(category_id: category_id) : all
-}
+  }
 
-scope :by_status, ->(status) {
+  scope :by_status, ->(status) {
   status.present? ? where(status: status) : all
-}
+  }
 
-scope :in_date_range, ->(start_date, end_date) {
+  scope :in_date_range, ->(start_date, end_date) {
   (start_date.present? && end_date.present?) ? where(date: start_date..end_date) : all
-}
+  }
+
+  scope :unarchived, -> { where.not(status: :archived) }
 
 
   # AASM

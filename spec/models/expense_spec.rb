@@ -10,7 +10,7 @@ RSpec.describe Expense, type: :model do
     it { should belong_to(:category) }
 
     # Custom association for Approver
-    it { should belong_to(:approver).class_name('User').with_foreign_key(:approved_by_id).optional }
+    it { should belong_to(:reviewer).class_name('User').with_foreign_key(:reviewed_by_id).optional }
   end
 
   describe "Validations" do

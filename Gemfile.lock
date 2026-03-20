@@ -330,6 +330,11 @@ GEM
       rspec-expectations (>= 3.13.0, < 5.0.0)
       rspec-mocks (>= 3.13.0, < 5.0.0)
       rspec-support (>= 3.13.0, < 5.0.0)
+    rspec-sidekiq (5.3.0)
+      rspec-core (~> 3.0)
+      rspec-expectations (~> 3.0)
+      rspec-mocks (~> 3.0)
+      sidekiq (>= 5, < 9)
     rspec-support (3.13.7)
     rubocop (1.85.1)
       json (~> 2.3)
@@ -444,6 +449,7 @@ DEPENDENCIES
   rails (~> 8.1.2)
   ros-apartment
   rspec-rails
+  rspec-sidekiq
   rubocop-rails-omakase
   shoulda-matchers
   sidekiq
