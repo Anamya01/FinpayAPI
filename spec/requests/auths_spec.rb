@@ -13,7 +13,7 @@ RSpec.describe "Authentication", type: :request do
     let(:user_attributes) { attributes_for(:user) }
 
     it "creates a new user" do
-      post "/signup", params: user_attributes, headers: headers
+      post "/signup", params: { user: user_attributes }, headers: headers
 
       if response.status != 201
         puts "FAILED RESPONSE: #{response.status} - #{response.body}"

@@ -1,11 +1,11 @@
 class CompaniesController < ApplicationController
   # GET /Companies
   def index
-    render json: Company.all
+    json_response(Company.all)
   end
   # GET /companies/:id
   def show
-    render json: company
+    json_response(company)
   end
   # POST /Companies
   def create
@@ -14,12 +14,12 @@ class CompaniesController < ApplicationController
       subdomain: params[:subdomain]
     )
     CompanyProvisioningService.call(company, params[:email], params[:password])
-    render json: company
+    json_response(company, :created)
   end
   # PUT companies/:id
   def update
     company.update!(company_params)
-    render json: company
+    json_response(company, :ok)
   end
   # DELETE companies/:id
   def destroy

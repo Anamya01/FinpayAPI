@@ -48,6 +48,17 @@ gem "devise-jwt"
 # Gem to serialize ruby objects into json format
 gem "jsonapi-serializer"
 
+# AASM
+gem "aasm"
+
+# Alba serializer
+gem "alba"
+
+# Kaminari for pagination
+gem "kaminari"
+
+gem "sidekiq"
+
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -62,9 +73,16 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
+  gem "bullet"
+
   gem "pry"
   gem "rspec-rails"
   gem "factory_bot_rails"
   gem "faker"
   gem "database_cleaner-active_record"
+  gem "shoulda-matchers"
+end
+
+group :test do
+  gem "rspec-sidekiq"
 end
