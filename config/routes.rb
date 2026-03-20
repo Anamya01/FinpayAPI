@@ -4,6 +4,16 @@ require "sidekiq/web"
 Sidekiq::Web.use ActionDispatch::Cookies
 Sidekiq::Web.use ActionDispatch::Session::CookieStore, key: "_interslice_session"
 
+Sidekiq::Web.use Rack::Auth::Basic do |username, password|
+  ActiveSupport::SecurityUtils.secure_compare(
+    ::Digest::SHA256.hexdigest(username),
+    ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_USERNAME"] || "admin")
+  ) & ActiveSupport::SecurityUtils.secure_compare(
+    ::Digest::SHA256.hexdigest(password),
+    ::Digest::SHA256.hexdigest(ENV["SIDEKIQ_PASSWORD"] || "password")
+  )
+end
+
 Rails.application.routes.draw do
   devise_for :users, skip: [ :sessions, :registrations ]
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
