@@ -20,15 +20,15 @@ class ExpensesController < ApplicationController
   def create
     new_expense = current_user.expenses.new(expense_params)
     new_expense.save!
-    AuditLogJob.perform_async(new_expense.id, current_user.id, "created")
-    ReceiptProcessorJob.perform_async(new_expense.id)
+    AuditLogJob.perform_async(Apartment::Tenant.current, new_expense.id, current_user.id, "created")
+    ReceiptProcessorJob.perform_async(Apartment::Tenant.current, new_expense.id)
     json_response(ExpenseSerializer.new(new_expense).serialize, :created)
   end
 
   def update
     expense.update!(expense_params)
       if params[:expense][:receipts].present?
-        ReceiptProcessorWorker.perform_async(expense.id)
+        ReceiptProcessorWorker.perform_async(Apartment::Tenant.current, expense.id)
       end
     json_response(ExpenseSerializer.new(expense).serialize)
   end

@@ -26,7 +26,7 @@ RSpec.describe "Categories", type: :request do
     it "denies access to non-admin users" do
       post "/categories", params: valid_params, headers: member_headers
       expect(response).to have_http_status(:forbidden)
-      expect(JSON.parse(response.body)['error']).to eq("Not authorized")
+      expect(JSON.parse(response.body)['message']).to eq("Not authorized")
     end
   end
 

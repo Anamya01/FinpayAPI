@@ -65,6 +65,7 @@ class ExpenseWorkflowService
 
   def audit_log(action, metadata = {})
     AuditLogJob.perform_async(
+      Apartment::Tenant.current,
       @expense.id,
       @user.id,
       action,

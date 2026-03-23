@@ -19,6 +19,7 @@ RSpec.configure do |config|
   config.fixture_paths = [ Rails.root.join('spec/fixtures') ]
 
   config.include AuthHelpers, type: :request
+  config.include TenantHelper
 
   # IMPORTANT: Disable transactional fixtures for Apartment/Multi-tenancy
   config.use_transactional_fixtures = false
