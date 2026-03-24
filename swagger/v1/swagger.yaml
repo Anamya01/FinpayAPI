@@ -1,0 +1,607 @@
+---
+openapi: 3.0.1
+info:
+  title: Expense API
+  version: v1
+paths:
+  "/api/v1/categories":
+    get:
+      summary: List categories
+      tags:
+      - Categories
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: categories fetched
+        '403':
+          description: forbidden
+    post:
+      summary: Create category
+      tags:
+      - Categories
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: category created
+        '403':
+          description: forbidden
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+              required:
+              - name
+  "/api/v1/categories/{id}":
+    get:
+      summary: Get category
+      tags:
+      - Categories
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: category found
+        '403':
+          description: forbidden
+    put:
+      summary: Update category
+      tags:
+      - Categories
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: category updated
+        '403':
+          description: forbidden
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+    delete:
+      summary: Delete category
+      tags:
+      - Categories
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: category deleted
+        '403':
+          description: forbidden
+  "/api/v1/expenses":
+    get:
+      summary: List expenses
+      tags:
+      - Expenses
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        schema:
+          type: integer
+      - name: category_id
+        in: query
+        schema:
+          type: integer
+      - name: start_date
+        in: query
+        schema:
+          type: string
+      - name: end_date
+        in: query
+        schema:
+          type: string
+      - name: status
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: expenses fetched (admin)
+    post:
+      summary: Create expense
+      tags:
+      - Expenses
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: expense created
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                amount:
+                  type: number
+                description:
+                  type: string
+                date:
+                  type: string
+                  format: date
+                category_id:
+                  type: integer
+                receipts:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+              - name
+              - amount
+              - date
+  "/api/v1/expenses/{id}":
+    get:
+      summary: Get expense
+      tags:
+      - Expenses
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: expense found (admin)
+    put:
+      summary: Update expense
+      tags:
+      - Expenses
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: expense updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                amount:
+                  type: number
+                description:
+                  type: string
+    delete:
+      summary: Delete expense
+      tags:
+      - Expenses
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: expense deleted
+  "/api/v1/expenses/{id}/approve":
+    post:
+      summary: Approve expense
+      tags:
+      - Expenses
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: approve successful (admin)
+        '403':
+          description: forbidden (non-admin)
+  "/api/v1/expenses/{id}/reject":
+    post:
+      summary: Reject expense
+      tags:
+      - Expenses
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: reject successful (admin)
+        '403':
+          description: forbidden (non-admin)
+  "/api/v1/expenses/{id}/reimburse":
+    post:
+      summary: Reimburse expense
+      tags:
+      - Expenses
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: reimburse successful (admin)
+        '403':
+          description: forbidden (non-admin)
+  "/api/v1/expenses/{id}/archive":
+    post:
+      summary: Archive expense
+      tags:
+      - Expenses
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: archive successful (admin)
+        '403':
+          description: forbidden (non-admin)
+  "/api/v1/signup":
+    post:
+      summary: Register user
+      tags:
+      - Auth
+      parameters: []
+      responses:
+        '201':
+          description: user created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+              required:
+              - email
+              - password
+              - password_confirmation
+  "/api/v1/user_info":
+    get:
+      summary: Get current user
+      tags:
+      - Auth
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: user fetched
+  "/api/v1/update_user":
+    put:
+      summary: Update user
+      tags:
+      - Auth
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: user updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+                current_password:
+                  type: string
+              required:
+              - current_password
+  "/api/v1/delete_user":
+    delete:
+      summary: Delete user
+      tags:
+      - Auth
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: user deleted
+  "/api/v1/login":
+    post:
+      summary: User login
+      tags:
+      - Auth
+      parameters: []
+      responses:
+        '200':
+          description: login successful
+        '401':
+          description: invalid credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+              - email
+              - password
+  "/api/v1/logout":
+    delete:
+      summary: User logout
+      tags:
+      - Auth
+      security:
+      - bearer_auth: []
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: logout successful
+  "/api/v1/companies":
+    get:
+      summary: list companies
+      tags:
+      - Companies
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create company
+      tags:
+      - Companies
+      parameters: []
+      responses:
+        '201':
+          description: company created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                subdomain:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+              - name
+              - subdomain
+              - email
+              - password
+  "/api/v1/companies/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: ID of the company
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: show company
+      tags:
+      - Companies
+      responses:
+        '200':
+          description: successful
+    put:
+      summary: update company
+      tags:
+      - Companies
+      parameters: []
+      responses:
+        '200':
+          description: successful
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+    delete:
+      summary: delete company
+      tags:
+      - Companies
+      responses:
+        '204':
+          description: no content
+components:
+  securitySchemes:
+    bearer_auth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    user:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        role:
+          type: string
+servers:
+- url: http://{subdomain}.lvh.me:3000
+  variables:
+    subdomain:
+      default: micro

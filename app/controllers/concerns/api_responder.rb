@@ -4,16 +4,17 @@ module ApiResponder
   private
 
   # success response
-  def json_response(data, status = :ok, message = nil)
+  def json_response(data:, status: :ok, message: :nil, metadata: {})
     render json: {
       success: true,
       message: message,
-      data: data
+      data: data,
+      metadata: metadata
     }, status: status
   end
 
   # error response
-  def error_response(message, status, errors = nil)
+  def error_response(message:, status:, errors: nil)
     render json: {
       success: false,
       message: message,

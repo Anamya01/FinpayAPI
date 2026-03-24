@@ -20,31 +20,37 @@ Rails.application.routes.draw do
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
-  devise_scope :user do
-    post "/signup", to: "auth/registrations#create"
-    post "/login", to: "auth/sessions#create"
-    delete "/logout", to: "auth/sessions#destroy"
+  namespace :api do
+    namespace :v1 do
+      devise_scope :user do
+        post "/signup", to: "auth/registrations#create"
+        post "/login", to: "auth/sessions#create"
+        delete "/logout", to: "auth/sessions#destroy"
 
-    get    "/user_info",   to: "auth/registrations#show"
-    put    "/update_user", to: "auth/registrations#update"
-    delete "/delete_user", to: "auth/registrations#destroy"
-  end
-  resources :companies
-  resources :categories
+        get    "/user_info",   to: "auth/registrations#show"
+        put    "/update_user", to: "auth/registrations#update"
+        delete "/delete_user", to: "auth/registrations#destroy"
+      end
+      resources :companies
+      resources :categories
 
-  resources :expenses do
-    resources :receipts, only: [ :create, :destroy ]
-    member do
-      post :approve
-      post :reject
-      post :reimburse
-      delete :archive
+      resources :expenses do
+        resources :receipts, only: [ :create, :destroy ]
+        member do
+          post :approve
+          post :reject
+          post :reimburse
+          delete :archive
+        end
+      end
     end
   end
 
 
 
   mount Sidekiq::Web => "/sidekiq"
+  mount Rswag::Ui::Engine => "/api-docs"
+  mount Rswag::Api::Engine => "/api-docs"
   # Defines the root path route ("/")
   # root "posts#index"
 end

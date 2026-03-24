@@ -5,7 +5,7 @@ RSpec.describe "Expenses", type: :request do
   let!(:category) { create(:category) }
   let(:headers) { authenticated_header(user) }
 
-  describe "POST /expenses" do
+  describe "POST /api/v1/expenses" do
     it "creates an expense" do
       params = {
         expense: {
@@ -16,7 +16,7 @@ RSpec.describe "Expenses", type: :request do
         }
       }
 
-      post "/expenses", params: params, headers: headers
+      post "/api/v1/expenses", params: params, headers: headers
 
       expect(response).to have_http_status(:created), response.body
 

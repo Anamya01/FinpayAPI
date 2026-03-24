@@ -35,6 +35,8 @@ en:
         success: "User created successfully"
       destroy:
         success: "User account deleted successfully"
+      update:
+        success: "User info updated successfully"
   services:
     expense_workflow:
       success:

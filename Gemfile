@@ -33,7 +33,7 @@ gem "thruster", require: false
 gem "image_processing", "~> 1.2"
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
-# gem "rack-cors"
+gem "rack-cors"
 
 # pg for postgresql support
 gem "pg"
@@ -58,6 +58,10 @@ gem "alba"
 gem "kaminari"
 
 gem "sidekiq"
+
+gem "rack-attack"
+
+gem "rswag"
 
 
 

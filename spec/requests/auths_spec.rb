@@ -8,11 +8,11 @@ RSpec.describe "Authentication", type: :request do
     }
   end
 
-  describe "POST /signup" do
+  describe "POST /api/v1/signup" do
     let(:user_attributes) { attributes_for(:user) }
 
     it "creates a user" do
-      post "/signup", params: { user: user_attributes }, headers: headers
+      post "/api/v1/signup", params: { user: user_attributes }, headers: headers
 
       expect(response).to have_http_status(:created), response.body
 
@@ -22,7 +22,7 @@ RSpec.describe "Authentication", type: :request do
     end
   end
 
-  describe "POST /login" do
+  describe "POST api/v1/login" do
     let(:password) { "password123" }
 
     let!(:user) do
@@ -32,7 +32,7 @@ RSpec.describe "Authentication", type: :request do
     end
 
     it "logs in successfully" do
-      post "/login",
+      post "/api/v1/login",
            params: { user: { email: user.email, password: password } },
            headers: headers
 
