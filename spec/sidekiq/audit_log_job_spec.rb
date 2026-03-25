@@ -1,4 +1,19 @@
 require 'rails_helper'
+
 RSpec.describe AuditLogJob, type: :job do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let(:user) { create(:user) }
+  let(:expense) { create(:expense, user: user) }
+  let(:tenant) { 'test' }
+
+  around do |example|
+    Sidekiq::Testing.inline! { example.run }
+  end
+
+  it 'creates an ActivityLog record in the correct tenant' do
+    expect {
+      AuditLogJob.perform_async(tenant, expense.id, user.id, 'approved')
+    }.to change {
+      within_tenant(tenant) { ActivityLog.count }
+    }.by(1)
+  end
 end

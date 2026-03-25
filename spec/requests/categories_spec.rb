@@ -8,11 +8,11 @@ RSpec.describe "Categories", type: :request do
   let(:headers) { authenticated_header(admin) }
   let(:member_headers) { authenticated_header(member) }
 
-  describe "POST /categories" do
+  describe "POST /api/v1/categories" do
     let(:valid_params) { { category: { name: "Office Supplies", description: "Paper and Pens" } } }
 
     it "creates a category within the 'test' tenant" do
-      post "/categories", params: valid_params, headers: headers
+      post "/api/v1/categories", params: valid_params, headers: headers
 
       expect(response).to have_http_status(:created)
 
@@ -24,24 +24,24 @@ RSpec.describe "Categories", type: :request do
     end
 
     it "denies access to non-admin users" do
-      post "/categories", params: valid_params, headers: member_headers
+      post "/api/v1/categories", params: valid_params, headers: member_headers
       expect(response).to have_http_status(:forbidden)
-      expect(JSON.parse(response.body)['error']).to eq("Not authorized")
+      expect(JSON.parse(response.body)['message']).to eq("Not authorized")
     end
   end
 
-  describe "GET /categories/:id" do
+  describe "GET /api/v1/categories/:id" do
     it "returns the specific category" do
-      get "/categories/#{category.id}", headers: headers
+      get "/api/v1/categories/#{category.id}", headers: headers
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(category.name)
     end
   end
 
-  describe "PATCH /categories/:id" do
+  describe "PATCH /api/v1/categories/:id" do
     it "updates the category name" do
-      patch "/categories/#{category.id}",
+      patch "/api/v1/categories/#{category.id}",
             params: { category: { name: "New Name" } },
             headers: headers
 

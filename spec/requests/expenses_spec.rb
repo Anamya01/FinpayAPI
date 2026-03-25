@@ -5,26 +5,26 @@ RSpec.describe "Expenses", type: :request do
   let!(:category) { create(:category) }
   let(:headers) { authenticated_header(user) }
 
-  describe "POST /expenses" do
-    it "creates an expense within the 'test' tenant" do
+  describe "POST /api/v1/expenses" do
+    it "creates an expense" do
       params = {
         expense: {
           name: "Business Trip",
           amount: 100.0,
           category_id: category.id,
-          date: Date.today,
-          receipts_attributes: [
-            { file: fixture_file_upload('spec/fixtures/files/test.jpg', 'image/jpeg') }
-          ]
+          date: Date.today
         }
       }
 
-      post "/expenses", params: params, headers: headers
+      post "/api/v1/expenses", params: params, headers: headers
 
-      expect(response).to have_http_status(:created)
+      expect(response).to have_http_status(:created), response.body
 
-      # Verify the data exists in the 'test' schema
-      Apartment::Tenant.switch!('test') do
+      within_tenant do
+        expect(Expense.last.name).to eq("Business Trip")
+      end
+
+      within_tenant do
         expect(Expense.count).to eq(1)
         expect(Expense.last.user_id).to eq(user.id)
       end

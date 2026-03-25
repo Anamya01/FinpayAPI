@@ -2,6 +2,8 @@ require_relative "boot"
 
 require "rails/all"
 
+require "rack/cors"
+
 require_relative "../app/middleware/company_switcher"
 
 # Require the gems listed in Gemfile, including any gems
@@ -15,6 +17,8 @@ module FinpayApi
 
     # Added middleware to handle tenant schema swiching
     config.middleware.use CompanySwitcher
+
+    config.middleware.use Rack::Attack
 
     config.active_storage.replace_on_assign_to_many = false
 
@@ -35,5 +39,6 @@ module FinpayApi
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+    config.middleware.insert_before Warden::Manager, CompanySwitcher
   end
 end
