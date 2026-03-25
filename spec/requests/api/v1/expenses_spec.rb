@@ -151,10 +151,7 @@ RSpec.describe 'Expenses API', type: :request do
           run_test!
         end
 
-        response '403', 'forbidden' do
-          include_context 'authenticated'
-          run_test!
-        end
+        it_behaves_like 'forbidden'
       end
     end
   end

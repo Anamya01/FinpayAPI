@@ -14,10 +14,7 @@ RSpec.describe 'Categories API', type: :request do
         run_test!
       end
 
-      response '403', 'forbidden' do
-        include_context 'authenticated'
-        run_test!
-      end
+      it_behaves_like 'forbidden'
     end
 
     post 'Create category' do
@@ -70,10 +67,7 @@ RSpec.describe 'Categories API', type: :request do
         run_test!
       end
 
-      response '403', 'forbidden' do
-        include_context 'authenticated'
-        run_test!
-      end
+      it_behaves_like 'forbidden'
     end
 
     put 'Update category' do
@@ -101,7 +95,6 @@ RSpec.describe 'Categories API', type: :request do
 
       response '403', 'forbidden' do
         include_context 'authenticated'
-
         let(:category) { { name: 'Fail' } }
         run_test!
       end
@@ -119,10 +112,7 @@ RSpec.describe 'Categories API', type: :request do
         run_test!
       end
 
-      response '403', 'forbidden' do
-        include_context 'authenticated'
-        run_test!
-      end
+      it_behaves_like 'forbidden'
     end
   end
 end

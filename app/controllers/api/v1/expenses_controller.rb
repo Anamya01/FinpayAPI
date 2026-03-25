@@ -28,7 +28,7 @@ module Api
       def update
         expense.update!(expense_params)
           if params[:expense][:receipts].present?
-            ReceiptProcessorWorker.perform_async(Apartment::Tenant.current, expense.id)
+            ReceiptProcessorJob.perform_async(Apartment::Tenant.current, expense.id)
           end
         json_response(data: ExpenseSerializer.new(expense))
       end
